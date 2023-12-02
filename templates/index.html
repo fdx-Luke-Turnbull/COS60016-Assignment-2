@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot App</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/index.css') }}">
+</head>
+<body>
+    <!-- Replace h1 with img for the logo -->
+    <img src="{{ url_for('static', filename='logo/Picture2.png') }}" alt="Logo" class="logo"/>
+
+    <div id="chat-container" class="chat-container">
+        <div id="chat-display" class="chat-display"></div>
+        <div id="chat-form-container" class="chat-form-container">
+            <input type="text" id="user-input" class="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()" class="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            try {
+                var userMessage = document.getElementById('user-input').value;
+                document.getElementById('user-input').value = '';
+
+                // Display user message in the chat display
+                var userMessageElement = '<div class="chat-message user-message">' + userMessage + '</div>';
+                document.getElementById('chat-display').innerHTML += userMessageElement;
+
+                // Scroll the chat display to the bottom
+                scrollChatToBottom();
+
+                // Send user message to the server for a response
+                const response = await fetch('/get_response', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'user_message=' + encodeURIComponent(userMessage),
+                });
+
+                const data = await response.text();
+
+                // Display chatbot response in the chat display if it's not empty
+                if (data.trim() !== '') {
+                    var chatbotMessageElement = '<div class="chat-message chatbot-message">' + data + '</div>';
+                    document.getElementById('chat-display').innerHTML += chatbotMessageElement;
+                }
+
+                // Scroll the chat display to the bottom
+                scrollChatToBottom();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function scrollChatToBottom() {
+            var chatDisplay = document.getElementById('chat-display');
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        }
+    </script>
+</body>
+</html>
