@@ -1,20 +1,35 @@
-body {
-  background-color: #f5f5f5;
+html, body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  font-family: 'Cooper Std Black', arial;
+}
+
+body {
+  font-family: 'Cooper Std Black', Arial;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* background: url('/static/images/stonehenge.jpg') center center no-repeat; */
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent background image overflow */
+}
+
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Set the z-index to be behind other elements */
+  background: url('/static/images/stonehenge.jpg') center center no-repeat;
   background-size: cover;
 }
 
 header {
   text-align: center;
   padding: 20px 0;
+  z-index: 2; /* Ensure the header is above the background image */
 }
 
 h1 {
@@ -27,59 +42,93 @@ h1 {
   height: auto;
   display: block;
   margin: 0 auto;
-  margin-bottom: 20px; /* Add margin to the bottom of the logo for spacing */
+  margin-bottom: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1; /* Ensure the logo is behind the chat window */
+}
+
+#app-wrapper {
+  width: 80%;
+  height: 80%;
+  text-align: center;
+  position: relative; /* Make #app-wrapper a positioning context */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 3; /* Ensure the chat window is above the logo */
 }
 
 #chat-container {
-  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
   padding: 20px;
   border-radius: 10px;
-  max-width: 600px;
-  width:60%;
+  width: 90%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  margin-top: 20px;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+  position: relative; /* Make chat-container a positioning context */
+  z-index: 4; /* Ensure the chat window is above the background image */
+  height: 100%; /* Adjusted to 100% of the viewport height */
 }
 
 #chat-display {
-  height: 400px; /* Set a max height for the chat display */
-  overflow-y: auto; /* Enable vertical scrollbar */
+  flex-grow: 1; /* Grow to fill available space */
+  max-height: calc(100% - 80px); /* Adjusted to fit within the chat container */
+  overflow-y: auto;
   padding: 10px;
+  width:90%;
+  margin: 0 auto;
+ /* Scroll bar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #4472C4 #ED7D31; /* Track and handle colors */
+
+  /* For browsers that support WebKit (e.g., Chrome, Safari) */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #BAC3C7; /* Handle color */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #fff; /* Track color */
+  }
+}
+
+#chat-form {
+  width:100%;
+  display:block;
 }
 
 #chat-form-container {
-    padding-top:20px;
-}
-
-/* Style for scrollbar */
-#chat-display::-webkit-scrollbar {
-  width: 8px; /* Set the width of the scrollbar */
-}
-
-#chat-display::-webkit-scrollbar-thumb {
-  background-color: #BAC3C7; /* Set the color of the scrollbar thumb */
-  border-radius: 4px; /* Set the border radius of the scrollbar thumb */
-}
-
-#chat-display::-webkit-scrollbar-track {
-  background-color: #f5f5f5; /* Set the color of the scrollbar track */
+  padding: 20px 10px;
+  width: 100%; /* Full width */
+  display: flex;
+  justify-content: space-between; /* Adjusted to spread items horizontally */
 }
 
 #user-input {
-  width: calc(100% - 20px); /* Adjust the width by subtracting padding */
+  width: 80%; /* Adjusted width */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 15px;
+  margin-right: 10px; /* Add some spacing between input and button */
   font-size: 16px;
   background-color: #fff;
 }
 
 button {
-  width: 100%;
-  padding: 10px;
+  width: 10%; /* Adjusted width */
+  padding: 10px 20px;
   border: 1px solid #4472C4;
   border-radius: 5px;
-  margin-bottom: 15px;
   font-size: 16px;
   background-color: #4472C4;
   color: #fff;
@@ -97,19 +146,38 @@ button:hover {
   border-radius: 5px;
 }
 
+.user-message-container {
+  text-align: right;
+  font-size:12px;
+}
+
+.chatbot-message-container {
+  text-align: left;
+  font-size:12px;
+}
+
 .user-message {
   background-color: #4472C4;
   color: #fff;
   text-align: right;
+  font-size: 16px;
 }
 
 .chatbot-message {
   background-color: #ED7D31;
   color: #fff;
   text-align: left;
+  font-size: 16px;
 }
 
 .alert {
   color: #d9534f;
   font-size: 14px;
+}
+
+/* Media Query for smaller screens */
+@media (max-width: 768px) {
+  #chat-container {
+    width: 90%;
+  }
 }
