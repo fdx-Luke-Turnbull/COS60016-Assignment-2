@@ -12,8 +12,8 @@ Weather Chatbot is a simple Python application that provides weather information
 ## Setup
 <ol>
 <li>Clone the Repository:</li>
-<code>git clone https://github.com/fdx-Luke-Turnbull/COS60016-Assignment-2</code>
-<code>cd PyWeatherBot</code>
+<code>git clone https://github.com/fdx-Luke-Turnbull/COS60016-Assignment-2</code><br>
+<code>cd COS60016-Assignment-2</code>
 
 <li>Install Dependencies:</li>
 <code> pip install -r requirements.txt </code>
