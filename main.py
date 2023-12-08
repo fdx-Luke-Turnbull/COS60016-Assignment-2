@@ -268,12 +268,29 @@ corpus_trainer.train('chatterbot.corpus.english.humor',
 
 # Define a timing decorator
 def timing_decorator(func):
+    """
+    Decorator to measure and print the execution time of a function.
+
+    :param func: The function to be decorated.
+    :return: The decorated function.
+    """
+
     def wrapper(*args, **kwargs):
+        # Record the start time before executing the function
         start_time = time.time()
+
+        # Execute the original function
         result = func(*args, **kwargs)
+
+        # Record the end time after the function execution
         end_time = time.time()
+
+        # Print the execution time
         print(f"{func.__name__} took {end_time - start_time:.4f} seconds to execute.")
+
+        # Return the result of the original function
         return result
+
     return wrapper
 
 
@@ -287,33 +304,65 @@ def home():
 @app.route("/get_response", methods=['POST'])
 @timing_decorator
 def get_bot_response():
+    """
+    Processes the user's message and generates an appropriate response.
+
+    :return: A response based on the user's message, either weather information or a general chatbot response.
+    """
+
+    # Retrieve the user's message from the form data
     user_message = request.form['user_message']
 
-    # Check if the user is asking about the weather forecast
+    # Keywords related to weather forecast
     forecast_keywords = ['forecast', 'tomorrow', 'week', 'weeks', 'next week']
+
+    # Check if the user is asking about the weather forecast
     if any(keyword in user_message.lower() for keyword in forecast_keywords):
         return process_weather_forecast_request(user_message)
     else:
-        return get_weather_response(user_message) or str(my_bot.get_response(user_message))
+        # If not a weather forecast request, attempt to get current weather response
+        weather_response = get_weather_response(user_message)
+
+        # If the weather_response is None, use the chatbot to generate a response
+        # Otherwise, return the weather_response
+        return weather_response or str(my_bot.get_response(user_message))
 
 
 def process_weather_forecast_request(user_message):
+    """
+    Processes a user's request for weather forecasts for specific cities.
+
+    :param user_message: The message provided by the user.
+    :return: A response with weather forecasts or an appropriate message if there is an issue.
+    """
+
     # Extract cities from the user's statement
     cities = [ent.text for ent in nlp(user_message).ents if ent.label_ == "GPE"]
+
+    # Retrieve the last known city from the session
     last_city = session.get('last_city')
 
     # Check if the user mentioned "metric" or "imperial" in the message
     unit, uom, speed = get_units_from_message(user_message)
 
-    # Get forecast responses
+    # Get forecast responses with a default count of 56 (can be adjusted)
     return get_weather_forecast_responses(cities, last_city, uom, unit, cnt=56)
 
 
 def get_units_from_message(user_message):
+    """
+    Extracts temperature unit, unit of measurement (UOM), and speed from the user's message.
+
+    :param user_message: The message provided by the user.
+    :return: A tuple containing temperature unit, unit of measurement, and speed.
+    """
+
     # Check if the user mentioned "metric" or "imperial" in the message
     if any(token.text.lower() in ['metric', 'celsius'] for token in nlp(user_message)):
+        # Set unit to Celsius, UOM to metric, and speed to meter/sec
         unit, uom, speed = 'celsius', 'metric', 'meter/sec'
     elif any(token.text.lower() in ['imperial', 'fahrenheit'] for token in nlp(user_message)):
+        # Set unit to Fahrenheit, UOM to imperial, and speed to miles/hour
         unit, uom, speed = 'fahrenheit', 'imperial', 'miles/hour'
     else:
         # If no specific unit is mentioned, use the last known values or default to imperial
@@ -321,20 +370,34 @@ def get_units_from_message(user_message):
                             session.get('last_uom') or 'imperial',
                             session.get('last_speed') or 'miles/hour')
 
+    # Update the session variables with the latest values
     session['last_unit'], session['last_uom'], session['last_speed'] = unit, uom, speed
+
+    # Return the extracted unit, UOM, and speed
     return unit, uom, speed
 
 
 def get_weather_response(user_message):
+    """
+    Generates a response about the current weather based on the user's message.
+
+    :param user_message: The message provided by the user.
+    :return: A response about the current weather or None if the message doesn't match the expected format.
+    """
+
+    # Predefined statement to detect if the user is asking about the current weather in a city
     weather_statement = nlp("Current weather in a city")
+
+    # Tokenize the user's message
     user_message_doc = nlp(user_message)
 
-    # Set last_unit, last_uom, and last_city before checking user's message
+    # Retrieve last known values for unit, UOM, and city from the session
     last_unit, last_uom, last_city = session.get('last_unit'), session.get('last_uom'), session.get('last_city')
 
-    # Check if the user mentioned "metric" or "imperial" in the message
+    # Check if the user mentioned "metric" or "imperial" in the message and get the unit and UOM
     unit, uom = get_units_from_message(user_message)[:2]
 
+    # Check if the user's message matches the predefined weather statement
     if weather_statement.similarity(user_message_doc) >= 0.75:
         # Extract cities from the user's statement
         cities = [ent.text for ent in user_message_doc.ents if ent.label_ == "GPE"]
