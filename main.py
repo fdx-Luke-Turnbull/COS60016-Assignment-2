@@ -431,8 +431,7 @@ my_bot = ChatBot(name="PyBot",
                      {
                          'import_path': 'chatterbot.logic.BestMatch',
                          'default_response':
-                             'Sorry, I am not sure how to respond. Try asking me the weather in a nearby city.',
-                         'threshold': 0.6
+                             'Sorry, I am not sure how to respond. Try asking me the weather in a nearby city.'
                      },
                  ],
                  database_uri='sqlite:///db.sqlite3',
