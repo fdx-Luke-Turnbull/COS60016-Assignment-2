@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatBot App</title>
+    <title>Weather ChatBot App</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/index.css') }}">
 </head>
 <body>
@@ -30,5 +30,27 @@
             Loading...
         </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Function to display the chatbot's introductory message on initialization
+        function displayIntroMessage() {
+            var introMessage = "Hi, I am a Weather Chatbot. Please ask me about the weather or forecast in your city.";
+
+            // Create HTML elements to represent the chatbot message
+            var introChatMessage = document.createElement("div");
+            introChatMessage.className = "chatbot-message-container";
+            introChatMessage.innerHTML = '<div style="padding:5px;">WeatherBot</div><div class="chat-message chatbot-message">' + introMessage + '</div>';
+
+            // Append the chatbot message to the chat display
+            document.getElementById('chat-display').appendChild(introChatMessage);
+
+            // Scroll the chat display to the bottom
+            scrollChatToBottom();
+        }
+
+        // Call the displayIntroMessage function when the page is loaded
+        window.onload = function () {
+            setTimeout(displayIntroMessage, 1000);
+        };
+    </script>
 </body>
 </html>
