@@ -17,7 +17,11 @@ Weather Chatbot is a simple Python application that provides weather information
 <li>Open project in PyCharm</li>
 
 <li>Install Dependencies:</li>
-<code> pip3 install -r requirements.txt </code>
+<code> per requirements.txt </code>
+
+<li>Install spacy</li>
+<code>pip install spacy</code>
+<code>python -m spacy download en_core_web_md</code>
 
 <li>Configuration:</li>
 Create a configuration file named config.ini with your OpenWeatherMap API key.<br>
