@@ -166,9 +166,8 @@ def get_weather(city_name, uom):
         response_dict = make_weather_request(f"data/2.5/weather?q={city_name}&units={uom}")
 
     if response_dict:
-        print("Response Dict:", response_dict)
+        # print("Response Dict:", response_dict)
         try:
-            print("Response Dict:", response_dict)
             # Extract weather information from API response
             description = response_dict["weather"][0]["description"]
             temperature = round(float(response_dict["main"]["temp"]))
@@ -375,7 +374,7 @@ def get_weather_response(user_message):
     # Check if the user's message matches the predefined weather statement
     if weather_statement.similarity(user_message_doc) >= 0.75:
         # Check for exact matches from location_dict in the user's message
-        location_matches = [location for location in places.keys() if location in user_message]
+        location_matches = [location for location in places.keys() if location.lower() in user_message.lower()]
 
         if not location_matches:
             # Extract cities from the user's statement
@@ -390,7 +389,8 @@ def get_weather_response(user_message):
             # Use the first matching location from location_dict
             city = location_matches[0]
             session['last_city'] = city  # Store the last city in the session
-            return generate_response_details(city)
+            responses = [generate_response_details(location) for location in location_matches or [last_city]]
+            return "\r\n".join(responses)
 
         # Generate responses for multiple cities if mentioned
         responses = [generate_response_details(city) for city in cities or [last_city]]
