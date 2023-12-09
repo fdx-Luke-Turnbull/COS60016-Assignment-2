@@ -82,7 +82,7 @@ class Weather(Base):
 
 
 # Drop the existing 'weather' table to help with bug fixing
-# Weather.__table__.drop(engine)
+Weather.__table__.drop(engine)
 
 # Recreate the 'weather' table
 Base.metadata.create_all(engine)
