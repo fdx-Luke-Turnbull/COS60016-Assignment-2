@@ -13,10 +13,11 @@ Weather Chatbot is a simple Python application that provides weather information
 <ol>
 <li>Clone the Repository:</li>
 <code>git clone https://github.com/fdx-Luke-Turnbull/COS60016-Assignment-2</code><br>
-<code>cd COS60016-Assignment-2</code>
+
+<li>Open project in PyCharm</li>
 
 <li>Install Dependencies:</li>
-<code> pip install -r requirements.txt </code>
+<code> pip3 install -r requirements.txt </code>
 
 <li>Configuration:</li>
 Create a configuration file named config.ini with your OpenWeatherMap API key.<br>
